@@ -2,13 +2,13 @@ import base64
 import os
 import json
 import random
-from PIL import Image
-# from email.message import EmailMessage
 
+# Email bits
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
+# Google API Bodge
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 	print("Send a Meme!")
 	# Get Creds - https://developers.google.com/people/quickstart/python
 	# Bodge for error about defualt creds - > https://stackoverflow.com/questions/35159967/setting-google-application-credentials-for-bigquery-python-cli
-	os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.getcwd(), "credentials.json")	
+	os.environ["GOOGLE_APPLICATION_CREDENTIALS_PATH"] = os.path.join(os.getcwd(), "credentials.json")	
 	creds = None
 	# The file token.json stores the user's access and refresh tokens, and is
 	# created automatically when the authorization flow completes for the first
@@ -100,7 +100,7 @@ if __name__ == "__main__":
 	email_subject = config["subject"] + " " + str(config["subject_ticker"])
 	sent, sent_mail = gmail_send_mail(
 		creds=creds,
-		to_email=config["recipients"][0],
+		to_email=",".join(config["recipients"]),
 		from_email=config["from"],
 		subject=email_subject,
 	)
