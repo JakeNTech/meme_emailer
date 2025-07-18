@@ -16,7 +16,7 @@ from googleapiclient.discovery import build
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-def gmail_send_mail(creds, to_email, from_email, subject):
+def gmail_send_mail(creds, to_email, from_email, bcc_email, subject):
 	# https://developers.google.com/workspace/gmail/api/guides/sending#python	
 	try:
 		service = build("gmail", "v1", credentials=creds)
@@ -25,7 +25,9 @@ def gmail_send_mail(creds, to_email, from_email, subject):
 		message = MIMEMultipart("related")
 		message["To"] = to_email # To Do: See if this can take a list
 		message["From"] = from_email
+		message["Bcc"] = bcc_email
 		message["Subject"] = subject
+
 
 		# https://stackoverflow.com/questions/920910/sending-multipart-html-emails-which-contain-embedded-images
 		msgAlternative = MIMEMultipart("alternative")
@@ -100,8 +102,9 @@ if __name__ == "__main__":
 	email_subject = config["subject"] + " " + str(config["subject_ticker"])
 	sent, sent_mail = gmail_send_mail(
 		creds=creds,
-		to_email=",".join(config["recipients"]),
+		to_email=config["from"],
 		from_email=config["from"],
+		bcc_email=",".join(config["recipients"]),
 		subject=email_subject,
 	)
 	# Did it work?
