@@ -40,9 +40,9 @@ def gmail_send_mail(creds, to_email, from_email, bcc_email, subject):
 		msgAlternative.attach(msgText)
 
 		# Select Meme
-		list_of_memes = os.listdir(os.path.join(os.getcwd(), "assets", "memes"))
+		list_of_memes = os.listdir(os.path.join(os.path.dirname(os.path.realpath(__file__)), "assets", "memes"))
 		selected_meme_path = list_of_memes[random.randint(0,len(list_of_memes)-1)]
-		with open(os.path.join(os.getcwd(), "assets", "memes", selected_meme_path), "rb") as f:
+		with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "assets", "memes", selected_meme_path), "rb") as f:
 			msg_image = MIMEImage(f.read())
 		msg_image.add_header("Content-ID", "<meme>")
 		message.attach(msg_image)
@@ -71,27 +71,27 @@ if __name__ == "__main__":
 	print("Send a Meme!")
 	# Get Creds - https://developers.google.com/people/quickstart/python
 	# Bodge for error about defualt creds - > https://stackoverflow.com/questions/35159967/setting-google-application-credentials-for-bigquery-python-cli
-	os.environ["GOOGLE_APPLICATION_CREDENTIALS_PATH"] = os.path.join(os.getcwd(), "credentials.json")	
+	os.environ["GOOGLE_APPLICATION_CREDENTIALS_PATH"] = os.path.join(os.path.dirname(os.path.realpath(__file__)), "credentials.json")	
 	creds = None
 	# The file token.json stores the user's access and refresh tokens, and is
 	# created automatically when the authorization flow completes for the first
 	# time.
-	if (os.path.exists(os.path.join(os.getcwd(),"token.json"))):
-		creds = Credentials.from_authorized_user_file(os.path.join(os.getcwd(),"token.json"), SCOPES)
+	if (os.path.exists(os.path.join(os.path.dirname(os.path.realpath(__file__)),"token.json"))):
+		creds = Credentials.from_authorized_user_file(os.path.join(os.path.dirname(os.path.realpath(__file__)),"token.json"), SCOPES)
 	# If there are no (valid) credentials available, let the user log in.
 	if ((creds == None) or (not creds.valid)):
 		if (creds and creds.expired and creds.refresh_token):
 			creds.refresh(Request())
 		else:
-			flow = InstalledAppFlow.from_client_secrets_file(os.path.join(os.getcwd(),"credentials.json"), SCOPES)
+			flow = InstalledAppFlow.from_client_secrets_file(os.path.join(os.path.dirname(os.path.realpath(__file__)),"credentials.json"), SCOPES)
 			creds = flow.run_local_server(port=0)
 		# Save the credentials for the next run
-		with open(os.path.join(os.getcwd(),"token.json"), "w") as token:
+		with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"token.json"), "w") as token:
 			token.write(creds.to_json())
 
 	# Open the config file
-	if (os.path.exists(os.path.join(os.getcwd(), "config.json"))):
-		with open(os.path.join(os.getcwd(), "config.json"), "r") as f:
+	if (os.path.exists(os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.json"))):
+		with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.json"), "r") as f:
 			config = json.load(f)
 	else:
 		print("Config file doesn't exist! Will Exit!")
